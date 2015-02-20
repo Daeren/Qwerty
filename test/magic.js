@@ -43,16 +43,12 @@ console.log(JSON.stringify({
 $("./data.json");
 $("./ops.js");
 
-return;
 
 $({"fire-inject": "inject"});
 
 $("fire-inject").go(function() { console.log("inject"); });
 $("inject").go(function() { console.log("inject"); });
 
-
-$({"inject": null});
-console.log("inject: %s", $("inject"));
 
 return;
 

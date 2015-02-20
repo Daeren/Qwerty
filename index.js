@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.001
+// Version: 0.00.002
 //
 //-----------------------------------------------------
 
@@ -64,11 +64,6 @@ var CApp = function(isGlobal) {
 
                     val = m[key];
                     name = val || key;
-
-                    if(val === null) {
-                        delete _.modules[key];
-                        continue;
-                    }
 
                     if(_.modules.hasOwnProperty(key)) {
                         result[name] = _.modules[key];
@@ -143,6 +138,25 @@ CApp.prototype = {
 
     "create": function(isGlobal) {
         return new CApp(isGlobal);
+    },
+
+    "remove": function(v) {
+        if(typeof(v) == "string") {
+            delete _.modules[v];
+        } else if(Array.isArray(v)) {
+            var _ = this;
+
+            v.forEach(function(e) {
+                delete _.modules[e];
+            });
+
+        } else if(v && typeof(v) == "object") {
+            for(var i in v) {
+                if(v.hasOwnProperty(i)) delete _.modules[i];
+            }
+        }
+
+        return this;
     }
 };
 
@@ -173,6 +187,9 @@ function loadModules(modules) {
         dirModules      = _.path;
 
     //------------------]>
+
+    if(!modules)
+        return;
 
     if(typeof(modules) == "string") {
         numForLoad = 1;
@@ -325,9 +342,6 @@ function loadModules(modules) {
 
     if(_.strict && numErrorsInstall)
         throw exceptions;
-}
-
-function installModule() {
 }
 
 //-----------------------------------------------------

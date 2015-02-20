@@ -46,6 +46,7 @@ Failed: 0
 | ------------- |-------------|-------------|
 |               | -           ||
 | create      	| Create new instance  								| (isGlobal) |
+| remove      	| Remove module(s) from `Qwerty` app  				| (v [string, array, hash]) |
 | $      		| Require  											| (module [string, array, hash], <args>) |
 |               | -           ||
 | strict        | Stop the work, if has errors in the modules  		| (v [default: true]) 	|
@@ -70,14 +71,7 @@ $("moduleClass", 3, 2, 1, <...>).func(), //_ Create object and call 'func'
 $(["module1", "module2"]), //_ Get list
 $({"fire-inject": "inject"}) //_ Alias
 
-//-----]>
-
 $("inject").go(function() { console.log("inject"); });
-$("fire-inject").go(function() { console.log("inject"); });
-
-$({"inject": null}); //_ Remove "inject"
-
-console.log("inject: %s", $("inject"));
 ```
 
 
