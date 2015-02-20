@@ -5,11 +5,11 @@
 require("qwerty")
 
 $(["fire-inject", "steel-model"]); //_ Yep, that's all 
-$("fire-inject").go(function() {});
+$("fire-inject").go(function() { console.log("Just Do It"); });
 
 
 /*-------------------}>
->node project
+>node project.js
 
 ---------------------+
 Load: 2 module(s)
@@ -42,7 +42,7 @@ Failed: 0
 
 #### Methods of Module
 
-| Name          | Desc        | Arg 		|
+| Name          | Desc        | Args 		|
 | ------------- |-------------|-------------|
 |               | -           ||
 | create      	| Create new instance  								| (isGlobal) |
@@ -75,6 +75,7 @@ $("inject").go(function() { console.log("inject"); });
 $("fire-inject").go(function() { console.log("inject"); });
 
 $({"inject": null}); //_ Remove "inject"
+
 console.log("inject: %s", $("inject"));
 ```
 
