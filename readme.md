@@ -2,7 +2,7 @@
 
 
 ```js
-require("qwerty")
+require("qwerty").log(2);
 
 $(["fire-inject", "steel-model"]); //_ Yep, that's all 
 $("fire-inject").go(function() { console.log("Just Do It"); });
@@ -51,6 +51,7 @@ Failed: 0
 | strict        | Stop the work, if has errors in the modules  		| (v [default: true]) 	|
 | global        | Set `$` as Global Var   							| (v [default: true]) 	|
 | dir        	| Project directory (where modules) 				| (v [default: __dirname]) |
+| log        	| Log level (0, 1, 2) 								| (v [default: 1]) |
 | autoInstall   | Automatic installation of modules  				| (v [default: true]) 	|
 
 

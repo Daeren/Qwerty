@@ -25,6 +25,7 @@ var CApp = function(isGlobal) {
 
     this.strict         = true;
     this.auto           = true;
+    this.logLevel       = 1;
     this.path           = __dirname;
 
     this.modules        = {};
@@ -128,6 +129,11 @@ CApp.prototype = {
         return this;
     },
 
+    "log": function(v) {
+        this.logLevel = v;
+        return this;
+    },
+
     "autoInstall": function(v) {
         this.auto = !!v;
         return this;
@@ -183,10 +189,12 @@ function loadModules(modules) {
         globalInstall = 3;
 
 
-    console.log("\n---------------------+");
-    console.log("Load: %s module(s)", numForLoad);
-    console.log("Dir: %s", dirModules);
-    console.log("---------------------+\n");
+    if(_.logLevel > 1) {
+        console.log("\n---------------------+");
+        console.log("Load: %s module(s)", numForLoad);
+        console.log("Dir: %s", dirModules);
+        console.log("---------------------+\n");
+    }
 
 
     function loadModule(key, value, iTry) {
@@ -217,13 +225,15 @@ function loadModules(modules) {
             exceptions.push(e);
 
             if(!isNotFound) {
-                console.log(e);
+                if(_.logLevel)
+                    console.log(e);
             }
 
             if(!iTry && isNotFound) {
                 var cmd;
 
-                console.log("\nNot found module: %s !\n", name);
+                if(_.logLevel)
+                    console.log("\nNot found module: %s !\n", name);
 
                 if(!_.auto) {
                     if(globalInstall == 3) {
@@ -250,7 +260,8 @@ function loadModules(modules) {
                 }
 
                 if(_.auto || cmd === "+") {
-                    console.log("Here We Go...");
+                    if(_.logLevel)
+                        console.log("Here We Go...");
 
                     try {
                         rShelljs.mkdir("-p", dirModules + "/node_modules");
@@ -279,7 +290,8 @@ function loadModules(modules) {
             }
         }
 
-        console.log("[%s] %s |> %s", _.modules.hasOwnProperty(name) ? "+" : "-", key, value || "");
+        if(_.logLevel)
+            console.log("[%s] %s |> %s", _.modules.hasOwnProperty(name) ? "+" : "-", key, value || "");
     }
 
     switch(mode) {
@@ -304,7 +316,7 @@ function loadModules(modules) {
     }
 
 
-    if(numForLoad > 1 && (numInstalled || numErrorsInstall)) {
+    if(_.logLevel > 1 && numForLoad > 1 && (numInstalled || numErrorsInstall)) {
         console.log("\n---------------------+");
         console.log("Success: %s", numInstalled);
         console.log("Failed: %s", numErrorsInstall);
