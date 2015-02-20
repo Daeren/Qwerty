@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.002
+// Version: 0.00.003
 //
 //-----------------------------------------------------
 
@@ -238,8 +238,10 @@ function loadModules(modules) {
         } catch(e) {
             var isNotFound = e.code == "MODULE_NOT_FOUND";
 
-            exceptions = exceptions || [];
-            exceptions.push(e);
+            if(_.strict && iTry) {
+                exceptions = exceptions || [];
+                exceptions.push(e);
+            }
 
             if(!isNotFound) {
                 if(_.logLevel)
@@ -289,6 +291,11 @@ function loadModules(modules) {
                         cmd = rShelljs.exec("cd " + dirModules + " && npm install " + key,  {"silent": true});
 
                         if(cmd.code !== 0) {
+                            if(_.strict) {
+                                exceptions = exceptions || [];
+                                exceptions.push(e);
+                            }
+
                             numErrorsInstall++;
                         }
 
@@ -340,7 +347,7 @@ function loadModules(modules) {
         console.log("---------------------+\n");
     }
 
-    if(_.strict && numErrorsInstall)
+    if(_.strict && exceptions)
         throw exceptions;
 }
 
