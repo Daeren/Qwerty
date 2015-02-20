@@ -1,0 +1,45 @@
+{
+    "name": "qwerty",
+    "version": "0.0.1",
+    "description": "Lazy 'require'",
+
+    "homepage": "http://666.io",
+    "keywords": [
+        "lazy",
+        "require",
+        "modules",
+		"npm",
+        "justdoit"
+    ],
+
+    "author": {
+        "name": "Daeren Torn",
+        "email": "x@db.gg"
+    },
+
+    "main": "./index",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/Daeren/Qwerty.git"
+    },
+
+    "license": "MIT",
+    "engines": {
+        "node": ">= 0.8.0"
+    },
+
+	"dependencies": {
+		"shelljs": "*",
+		"readline-sync": "*"
+	},
+  
+    "readme": "",
+    "readmeFilename": "readme.md",
+
+    "bugs": {
+        "url": "https://github.com/Daeren/Qwerty/issues"
+    },
+
+    "_id": "qwerty@0.0.1",
+    "_from": "qwerty@"
+}
