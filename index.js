@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.003
+// Version: 0.00.004
 //
 //-----------------------------------------------------
 
@@ -49,7 +49,7 @@ var CApp = function(isGlobal) {
                 while(len--) {
                     key = m[len];
 
-                    if(_.modules.hasOwnProperty(key)) {
+                    if(Object.prototype.hasOwnProperty.call(_.modules, key)) {
                         result[key] = _.modules[key];
                     } else {
                         notFound = notFound || [];
@@ -60,12 +60,12 @@ var CApp = function(isGlobal) {
                 var val, name;
 
                 for(var key in m) {
-                    if(!m.hasOwnProperty(key)) continue;
+                    if(!Object.prototype.hasOwnProperty.call(m, key)) continue;
 
                     val = m[key];
                     name = val || key;
 
-                    if(_.modules.hasOwnProperty(key)) {
+                    if(Object.prototype.hasOwnProperty.call(_.modules, key)) {
                         result[name] = _.modules[key];
                     } else {
                         notFound = notFound || {};
@@ -82,7 +82,7 @@ var CApp = function(isGlobal) {
 
         //---------------)>
 
-        if(!_.modules.hasOwnProperty(m)) {
+        if(!Object.prototype.hasOwnProperty.call(_.modules, m)) {
             loadModules.call(_, m);
         }
 
@@ -152,7 +152,7 @@ CApp.prototype = {
 
         } else if(v && typeof(v) == "object") {
             for(var i in v) {
-                if(v.hasOwnProperty(i)) delete _.modules[i];
+                if(Object.prototype.hasOwnProperty.call(v, i)) delete _.modules[i];
             }
         }
 
@@ -315,7 +315,7 @@ function loadModules(modules) {
         }
 
         if(_.logLevel)
-            console.log("[%s] %s |> %s", _.modules.hasOwnProperty(name) ? "+" : "-", key, value || "");
+            console.log("[%s] %s |> %s", Object.prototype.hasOwnProperty.call(_.modules, name) ? "+" : "-", key, value || "");
     }
 
     switch(mode) {
@@ -333,7 +333,7 @@ function loadModules(modules) {
 
         case 3:
             for(var i in modules) {
-                if(modules.hasOwnProperty(i)) loadModule(i, modules[i])
+                if(Object.prototype.hasOwnProperty.call(modules, i)) loadModule(i, modules[i])
             }
 
             break;
