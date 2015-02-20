@@ -1,4 +1,4 @@
-`npm install qwerty`
+`npm install qwerty -g`
 
 
 ```js
