@@ -293,7 +293,7 @@ function loadModules(modules) {
                         if(cmd.code !== 0) {
                             if(_.strict) {
                                 exceptions = exceptions || [];
-                                exceptions.push(e);
+                                exceptions.push(new Error(cmd.output));
                             }
 
                             numErrorsInstall++;
