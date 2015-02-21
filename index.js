@@ -26,7 +26,7 @@ var CApp = function(isGlobal) {
     this.strict         = true;
     this.auto           = true;
     this.logLevel       = 1;
-    this.path           = __dirname;
+    this.path           = "";
 
     this.modules        = {};
 
@@ -120,7 +120,7 @@ CApp.prototype = {
     },
 
     "dir": function(v) {
-        this.path = rPath.normalize(v || ".");
+        this.path = v || "";
         return this;
     },
 
@@ -184,7 +184,7 @@ function loadModules(modules) {
         globalInstall,      //_ 0 - N, 1 - Y, 2 - C, 3 - Q
         exceptions,
 
-        dirModules      = _.path;
+        dirModules          = _.path;
 
     //------------------]>
 
@@ -209,32 +209,35 @@ function loadModules(modules) {
     if(_.logLevel > 1) {
         console.log("\n---------------------+");
         console.log("Load: %s module(s)", numForLoad);
-        console.log("Dir: %s", dirModules);
+        console.log("Dir: %s", dirModules || "[global]");
         console.log("---------------------+\n");
     }
 
 
     function loadModule(key, value, iTry) {
         var name = value || key;
-        var obj;
+        var objModule;
 
         //----------------)>
 
         try {
-            try {
-                obj = include(key);
-            } catch(e) {
-                if(e.code != "MODULE_NOT_FOUND") throw e;
-
+            if(!dirModules) objModule = include(key);
+            else {
                 try {
-                    obj = include(dirModules + "/" + key);
+                    objModule = include(dirModules + "/node_modules/" + key);
                 } catch(e) {
                     if(e.code != "MODULE_NOT_FOUND") throw e;
-                    obj = include(dirModules + "/node_modules/" + key);
+
+                    try {
+                        objModule = include(dirModules + "/" + key);
+                    } catch(e) {
+                        if(e.code != "MODULE_NOT_FOUND") throw e;
+                        objModule = include(key);
+                    }
                 }
             }
 
-            _.modules[name] = obj;
+            _.modules[name] = objModule;
         } catch(e) {
             var isNotFound = e.code == "MODULE_NOT_FOUND";
 
@@ -283,12 +286,8 @@ function loadModules(modules) {
                         console.log("Here We Go...");
 
                     try {
-                        rShelljs.mkdir("-p", dirModules + "/node_modules");
-                    } catch(e) {
-                    }
-
-                    try {
-                        cmd = rShelljs.exec("cd " + dirModules + " && npm install " + key,  {"silent": true});
+                        cmd = (dirModules ? ("cd " + dirModules + " && ") : "") + "npm install " + key + (dirModules ? "" : " -g");
+                        cmd = rShelljs.exec(cmd,  {"silent": true});
 
                         if(cmd.code !== 0) {
                             if(_.strict) {

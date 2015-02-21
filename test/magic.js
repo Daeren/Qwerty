@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.001
+// Version: 0.00.004
 //
 //-----------------------------------------------------
 
@@ -10,7 +10,10 @@
 
 //-----------------------------------------------------
 
-var rQwerty             = require("../index").dir(__dirname);
+//_ Dir [SET] -> Check Local [TREE] -> Check Global -> If [-] -> Install Local
+//_ Dir [NSET] -> Check Global -> If [-] -> Install Global
+
+var rQwerty             = require("../index").log(2).dir(__dirname);
 
 //-----------------------------------------------------
 
@@ -42,15 +45,13 @@ console.log(JSON.stringify({
 
 $("./data.json");
 $("./ops.js");
-
+$("./x/node_modules/ops.js");
 
 $({"fire-inject": "inject"});
 
 $("fire-inject").go(function() { console.log("inject"); });
 $("inject").go(function() { console.log("inject"); });
 
-
-return;
 
 //$("fire-inject.js");
 //$(["fire-inject", "steel-model", "_empty_like_a_module_"]);
