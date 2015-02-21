@@ -16,7 +16,7 @@ $("fire-inject").go(function() { console.log("Just Do It"); });
 
 ---------------------+
 Load: 2 module(s)
-Dir: /web/projectx
+Dir: [global]
 ---------------------+
 
 Not found module: steel-model !
@@ -47,16 +47,17 @@ Failed: 0
 
 | Name          | Desc        | Args 		|
 | ------------- |-------------|-------------|
-|               | -           ||
-| create      	| Create new instance  								| (isGlobal) |
-| remove      	| Remove module(s) from `Qwerty` app  				| (v [string, array, hash]) |
-| $      		| Require  											| (module [string, array, hash], <args>) |
-|               | -           ||
-| strict        | Stop the work, if has errors in the modules  		| (v [default: true]) 	|
-| global        | Set `$` as Global Var   							| (v [default: true]) 	|
-| dir        	| Project directory (where modules) 				| (v [default: ""]) |
-| log        	| Log level (0, 1, 2) 								| (v [default: 1]) |
-| autoInstall   | Automatic installation of modules  				| (v [default: true]) 	|
+|               	| -           ||
+| createInstance    | Create new instance  								| (isGlobal) |
+| new      			| Set module(s) in `Qwerty` app  					| (name [string, hash], [data]) |
+| remove      		| Remove module(s) from `Qwerty` app  				| (name [string, array, hash]) |
+| $      			| Require  											| (module [string, array, hash], <args>) |
+|               	| -           ||
+| strict        	| Stop the work, if has errors in the modules  		| (v [default: true]) 	|
+| global        	| Set `$` as Global Var   							| (v [default: true]) 	|
+| dir        		| Project directory (where modules) 				| (v [default: ""]) |
+| log        		| Log level (0, 1, 2) 								| (v [default: 1]) |
+| autoInstall   	| Automatic installation of modules  				| (v [default: true]) 	|
 
 
 #### Examples
@@ -75,6 +76,8 @@ $(["module1", "module2"]), //_ Get list
 $({"fire-inject": "inject"}) //_ Alias
 
 $("inject").go(function() { console.log("inject"); });
+
+$("fire-inject@0.0.29").go(function() { console.log("inject"); });
 ```
 
 

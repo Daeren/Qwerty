@@ -136,23 +136,35 @@ CApp.prototype = {
 
     //------------]>
 
-    "create": function(isGlobal) {
+    "createInstance": function(isGlobal) {
         return new CApp(isGlobal);
     },
 
-    "remove": function(v) {
-        if(typeof(v) == "string") {
-            delete _.modules[v];
-        } else if(Array.isArray(v)) {
+    "new": function(name, data) {
+        if(typeof(name) == "string") {
+            this.modules[name] = data;
+        } else if(name && typeof(name) == "object") {
+            for(var i in name) {
+                if(Object.prototype.hasOwnProperty.call(name, i)) this.modules[i] = name[i];
+            }
+        }
+
+        return this;
+    },
+
+    "delete": function(name) {
+        if(typeof(name) == "string") {
+            delete this.modules[name];
+        } else if(Array.isArray(name)) {
             var _ = this;
 
-            v.forEach(function(e) {
+            name.forEach(function(e) {
                 delete _.modules[e];
             });
 
-        } else if(v && typeof(v) == "object") {
-            for(var i in v) {
-                if(Object.prototype.hasOwnProperty.call(v, i)) delete _.modules[i];
+        } else if(name && typeof(name) == "object") {
+            for(var i in name) {
+                if(Object.prototype.hasOwnProperty.call(name, i)) delete this.modules[i];
             }
         }
 

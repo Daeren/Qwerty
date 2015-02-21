@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.004
+// Version: 0.00.005
 //
 //-----------------------------------------------------
 
@@ -18,16 +18,17 @@ var rQwerty             = require("../index").log(2).dir(__dirname);
 //-----------------------------------------------------
 
 {
-    var m = rQwerty.modules;
+    rQwerty.new({
+        "test":     13,
+        "testV1":   "X",
+        "testV2":   "Y"
+    });
 
-    m.test = 13;
-    m.testV1 = "X";
-    m.testV2 = "Y";
-
-    m.testClass = function() {
+    rQwerty.new("testClass", function() {
         this.data = 666;  console.log("test/Class:", arguments);
-    };
-    m.testClass.prototype.func = function() { return 69; };
+    });
+
+    $("testClass").prototype.func = function() { return 69; };
 }
 
 //-------------------------]>
@@ -51,6 +52,8 @@ $({"fire-inject": "inject"});
 
 $("fire-inject").go(function() { console.log("inject"); });
 $("inject").go(function() { console.log("inject"); });
+
+$("fire-inject@0.0.29").go(function() { console.log("inject"); });
 
 
 //$("fire-inject.js");
