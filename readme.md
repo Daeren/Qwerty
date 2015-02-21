@@ -22,17 +22,19 @@ Dir: /web/project
 Not found module: steel-model !
 
 Here We Go...
-[+] steel-model |>
+[+] steel-model@0.0.33 |>
 
 Not found module: fire-inject !
 
 Here We Go...
-[+] fire-inject |>
+[+] fire-inject@0.0.36 |>
 
 ---------------------+
 Success: 2
 Failed: 0
 ---------------------+
+
+...
 */
 ```
 
