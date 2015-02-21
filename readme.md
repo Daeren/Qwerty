@@ -2,8 +2,8 @@
 
 
 ```js
-//_ Dir [SET] -> Check Local [TREE] -> Check Global -> If [-] -> Install Local
-//_ Dir [NSET] -> Check Global -> If [-] -> Install Global
+
+//_ Dir/Project -> Check Local [TREE] -> Check Global -> If [-] -> Install Local
 
 require("qwerty").log(2);
 

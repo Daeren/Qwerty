@@ -46,7 +46,7 @@ console.log(JSON.stringify({
 
 $({"fire-inject": "inject"});
 
-$("fire-inject").go(function() { console.log("inject"); });
+$("fire-inject@0.0.36").go(function() { console.log("inject"); });
 $("inject").go(function() { console.log("inject"); });
 
 $("fire-inject@0.0.30").go(function() { console.log("inject"); });

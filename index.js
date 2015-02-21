@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.004
+// Version: 0.00.006
 //
 //-----------------------------------------------------
 
@@ -108,7 +108,7 @@ var CApp = function(isGlobal) {
         },
 
         "dir": function(v) {
-            _.path = v || "";
+            _.path = rPath.normalize(v || "");
             return _;
         },
 
@@ -194,17 +194,14 @@ function include(path) {
     return require(path);
 }
 
-function resolveModulePath(name) {
-    var fc = require.resolve(name);
+function getPathByFile(v) {
+    if(!v || typeof(v) != "string")
+        return "";
 
-    if(fc) {
-        fc = fc.split(/\\\\|\\|\//g);
-        fc.pop();
+    v = v.split(/\\\\|\\|\//g);
+    v.pop();
 
-        fc = rPath.normalize(fc.join("/"));
-    }
-
-    return fc;
+    return rPath.normalize(v.join("/"));
 }
 
 //----------------------------------]>
@@ -220,7 +217,7 @@ function loadModules(modules) {
         globalInstall,      //_ 0 - N, 1 - Y, 2 - C, 3 - Q
         exceptions,
 
-        dirModules          = _.path;
+        dirModules          = _.path || getPathByFile(module.parent.filename);
 
     //------------------]>
 
@@ -269,18 +266,36 @@ function loadModules(modules) {
         //----------------)>
 
         try {
-            //-----[Get module version]-------]>
+            //-----[Try find module]-------}>
 
-            if(moduleVer) {
-                var packageVer, error,
-                    modulePath = resolveModulePath(moduleName);
+            {
+                var modulePackage, pathGoodVer, error;
+                var ps = module.parent.paths;
 
-                try {
-                    packageVer = include(modulePath + "/package.json").version;
-                } catch(e) {
+                for(var i = 0, p; !pathGoodVer && i < ps.length; i++) {
+                    p = ps[i];
+
+                    try {
+                        modulePackage = include(p + "/" + moduleName + "/package.json");
+                        pathGoodVer = p;
+
+                        if(modulePackage.hasOwnProperty("version")) {
+                            var packageVer = modulePackage.version;
+
+                            if(moduleVer && moduleVer != packageVer) {
+                                pathGoodVer = undefined;
+
+                            }
+                        }
+                    } catch(e) {
+                    }
                 }
 
-                if(moduleVer != packageVer) {
+                //--------[Try load or Not found need Ver.]------}>
+
+                if(pathGoodVer) {
+                    objModule = include(pathGoodVer + "/" + moduleName);
+                } else if(modulePackage) {
                     error = new Error("package.json: different versions");
                     error.code = "MODULE_NOT_FOUND";
 
@@ -288,26 +303,23 @@ function loadModules(modules) {
                 }
             }
 
-            //-----[Try require]-------]>
+            //-----[Try require]-------}>
 
-            if(!dirModules) {
-                objModule = include(moduleName);
-            }
-            else {
+            try {
+                objModule = include(dirModules + "/node_modules/" + moduleName);
+            } catch(e) {
+                if(e.code != "MODULE_NOT_FOUND") throw e;
+
                 try {
-                    objModule = include(dirModules + "/node_modules/" + moduleName);
+                    objModule = include(dirModules + "/" + moduleName);
                 } catch(e) {
                     if(e.code != "MODULE_NOT_FOUND") throw e;
 
-                    try {
-                        objModule = include(dirModules + "/" + moduleName);
-                    } catch(e) {
-                        if(e.code != "MODULE_NOT_FOUND") throw e;
-
-                        objModule = include(moduleName);
-                    }
+                    objModule = include(moduleName);
                 }
             }
+
+            //-------------------]>
 
             _.modules[name] = objModule;
         } catch(e) {
@@ -327,7 +339,7 @@ function loadModules(modules) {
                 var cmd;
 
                 if(_.logLevel)
-                    console.log("\nNot found module: %s !\n", name);
+                    console.log("\nNot found module: %s !\n", moduleFullName);
 
                 if(!_.auto) {
                     if(globalInstall == 3) {
@@ -359,6 +371,9 @@ function loadModules(modules) {
 
                     try {
                         cmd = (dirModules ? ("cd " + dirModules + " && ") : "") + "npm install " + moduleName + (moduleVer ? ("@" + moduleVer) : "") + (dirModules ? "" : " -g");
+
+
+                        console.log(cmd);
                         cmd = rShelljs.exec(cmd,  {"silent": true});
 
                         if(cmd.code !== 0) {
