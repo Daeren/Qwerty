@@ -101,72 +101,83 @@ var CApp = function(isGlobal) {
 
     //-----------------]>
 
-    if(isGlobal)
+    var shareMethods = {
+        "strict": function(v) {
+            _.strict = !!v;
+            return _;
+        },
+
+        "dir": function(v) {
+            _.path = v || "";
+            return _;
+        },
+
+        "log": function(v) {
+            _.logLevel = v;
+            return _;
+        },
+
+        "autoInstall": function(v) {
+            _.auto = !!v;
+            return _;
+        },
+
+        //------------)>
+
+        "createInstance": function(isGlobal) {
+            return new CApp(isGlobal);
+        },
+
+        "new": function(name, data) {
+            if(typeof(name) == "string") {
+                _.modules[name] = data;
+            } else if(name && typeof(name) == "object") {
+                for(var i in name) {
+                    if(Object.prototype.hasOwnProperty.call(name, i)) _.modules[i] = name[i];
+                }
+            }
+
+            return _;
+        },
+
+        "delete": function(name) {
+            if(typeof(name) == "string") {
+                delete _.modules[name];
+            } else if(Array.isArray(name)) {
+                name.forEach(function(e) {
+                    delete _.modules[e];
+                });
+
+            } else if(name && typeof(name) == "object") {
+                for(var i in name) {
+                    if(Object.prototype.hasOwnProperty.call(name, i)) delete _.modules[i];
+                }
+            }
+
+            return _;
+        }
+    };
+
+
+    for(var i in shareMethods) {
+        if(!shareMethods.hasOwnProperty(i)) continue;
+
+        if(isGlobal) {
+            this.$[i] = shareMethods[i];
+        }
+
+        this[i] = shareMethods[i];
+    }
+
+    if(isGlobal) {
         global.$ =  this.$;
+    }
 };
 
 CApp.prototype = {
-    "strict": function(v) {
-        this.strict = !!v;
-        return this;
-    },
-
-
     "global": function(v) {
         if(v) global.$ = this.require;
         else delete global.$;
-
-        return this;
-    },
-
-    "dir": function(v) {
-        this.path = v || "";
-        return this;
-    },
-
-    "log": function(v) {
-        this.logLevel = v;
-        return this;
-    },
-
-    "autoInstall": function(v) {
-        this.auto = !!v;
-        return this;
-    },
-
-    //------------]>
-
-    "createInstance": function(isGlobal) {
-        return new CApp(isGlobal);
-    },
-
-    "new": function(name, data) {
-        if(typeof(name) == "string") {
-            this.modules[name] = data;
-        } else if(name && typeof(name) == "object") {
-            for(var i in name) {
-                if(Object.prototype.hasOwnProperty.call(name, i)) this.modules[i] = name[i];
-            }
-        }
-
-        return this;
-    },
-
-    "delete": function(name) {
-        if(typeof(name) == "string") {
-            delete this.modules[name];
-        } else if(Array.isArray(name)) {
-            var _ = this;
-
-            name.forEach(function(e) {
-                delete _.modules[e];
-            });
-
-        } else if(name && typeof(name) == "object") {
-            for(var i in name) {
-                if(Object.prototype.hasOwnProperty.call(name, i)) delete this.modules[i];
-            }
-        }
 
         return this;
     }
@@ -183,14 +194,27 @@ function include(path) {
     return require(path);
 }
 
+function resolveModulePath(name) {
+    var fc = require.resolve(name);
+
+    if(fc) {
+        fc = fc.split(/\\\\|\\|\//g);
+        fc.pop();
+
+        fc = rPath.normalize(fc.join("/"));
+    }
+
+    return fc;
+}
+
 //----------------------------------]>
 
 function loadModules(modules) {
     var _ = this;
 
     var numForLoad,
-        numInstalled        = 0,
-        numErrorsInstall    = 0,
+        numInstallsSuccess  = 0,
+        numInstallsFailed   = 0,
 
         mode,               //_ 1 - string, 2 - array, 3 - hash
         globalInstall,      //_ 0 - N, 1 - Y, 2 - C, 3 - Q
@@ -226,25 +250,61 @@ function loadModules(modules) {
     }
 
 
-    function loadModule(key, value, iTry) {
-        var name = value || key;
-        var objModule;
+    function loadModule(moduleName, moduleAlias, iTry) {
+        var name = moduleAlias || moduleName;
+
+        var objModule,
+            moduleVer,
+            moduleFullName = moduleName; //_ Name + Ver
+
+        //----------------)>
+
+        {
+            var s = moduleFullName.split("@");
+
+            moduleName = s[0];
+            moduleVer = s[1] || "";
+        }
 
         //----------------)>
 
         try {
-            if(!dirModules) objModule = include(key);
+            //-----[Get module version]-------]>
+
+            if(moduleVer) {
+                var packageVer, error,
+                    modulePath = resolveModulePath(moduleName);
+
+                try {
+                    packageVer = include(modulePath + "/package.json").version;
+                } catch(e) {
+                }
+
+                if(moduleVer != packageVer) {
+                    error = new Error("package.json: different versions");
+                    error.code = "MODULE_NOT_FOUND";
+
+                    throw error;
+                }
+            }
+
+            //-----[Try require]-------]>
+
+            if(!dirModules) {
+                objModule = include(moduleName);
+            }
             else {
                 try {
-                    objModule = include(dirModules + "/node_modules/" + key);
+                    objModule = include(dirModules + "/node_modules/" + moduleName);
                 } catch(e) {
                     if(e.code != "MODULE_NOT_FOUND") throw e;
 
                     try {
-                        objModule = include(dirModules + "/" + key);
+                        objModule = include(dirModules + "/" + moduleName);
                     } catch(e) {
                         if(e.code != "MODULE_NOT_FOUND") throw e;
-                        objModule = include(key);
+
+                        objModule = include(moduleName);
                     }
                 }
             }
@@ -263,7 +323,7 @@ function loadModules(modules) {
                     console.log(e);
             }
 
-            if(!iTry && isNotFound) {
+            if(isNotFound && !iTry) {
                 var cmd;
 
                 if(_.logLevel)
@@ -298,7 +358,7 @@ function loadModules(modules) {
                         console.log("Here We Go...");
 
                     try {
-                        cmd = (dirModules ? ("cd " + dirModules + " && ") : "") + "npm install " + key + (dirModules ? "" : " -g");
+                        cmd = (dirModules ? ("cd " + dirModules + " && ") : "") + "npm install " + moduleName + (moduleVer ? ("@" + moduleVer) : "") + (dirModules ? "" : " -g");
                         cmd = rShelljs.exec(cmd,  {"silent": true});
 
                         if(cmd.code !== 0) {
@@ -307,7 +367,7 @@ function loadModules(modules) {
                                 exceptions.push(new Error(cmd.output));
                             }
 
-                            numErrorsInstall++;
+                            numInstallsFailed++;
                         }
 
                         cmd = cmd.output;
@@ -316,9 +376,9 @@ function loadModules(modules) {
                     }
 
                     if(cmd && !cmd.toString().match(new RegExp("npm\\s+ERR!", "im"))) {
-                        numInstalled++;
+                        numInstallsSuccess++;
 
-                        loadModule(key, value, true);
+                        loadModule(moduleFullName, moduleAlias, true);
                         return;
                     }
                 }
@@ -326,7 +386,7 @@ function loadModules(modules) {
         }
 
         if(_.logLevel)
-            console.log("[%s] %s |> %s", Object.prototype.hasOwnProperty.call(_.modules, name) ? "+" : "-", key, value || "");
+            console.log("[%s] %s@%s |> %s", Object.prototype.hasOwnProperty.call(_.modules, name) ? "+" : "-", moduleName, moduleVer, moduleAlias || "");
     }
 
     switch(mode) {
@@ -351,10 +411,10 @@ function loadModules(modules) {
     }
 
 
-    if(_.logLevel > 1 && numForLoad > 1 && (numInstalled || numErrorsInstall)) {
+    if(_.logLevel > 1 && numForLoad > 1 && (numInstallsSuccess || numInstallsFailed)) {
         console.log("\n---------------------+");
-        console.log("Success: %s", numInstalled);
-        console.log("Failed: %s", numErrorsInstall);
+        console.log("Success: %s", numInstallsSuccess);
+        console.log("Failed: %s", numInstallsFailed);
         console.log("---------------------+\n");
     }
 

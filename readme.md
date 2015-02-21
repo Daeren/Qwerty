@@ -8,7 +8,7 @@
 require("qwerty").log(2);
 
 $(["fire-inject", "steel-model"]); //_ Yep, that's all 
-$("fire-inject").go(function() { console.log("Just Do It"); });
+$("fire-inject@0.0.30").go(function() { console.log("Just Do It"); });
 
 
 /*-------------------}>
@@ -45,19 +45,20 @@ Failed: 0
 
 #### Methods of Module
 
-| Name          | Desc        | Args 		|
-| ------------- |-------------|-------------|
-|               	| -           ||
-| createInstance    | Create new instance  								| (isGlobal) |
-| new      			| Set module(s) in `Qwerty` app  					| (name [string, hash], [data]) |
-| remove      		| Remove module(s) from `Qwerty` app  				| (name [string, array, hash]) |
-| $      			| Require  											| (module [string, array, hash], <args>) |
-|               	| -           ||
-| strict        	| Stop the work, if has errors in the modules  		| (v [default: true]) 	|
-| global        	| Set `$` as Global Var   							| (v [default: true]) 	|
-| dir        		| Project directory (where modules) 				| (v [default: ""]) |
-| log        		| Log level (0, 1, 2) 								| (v [default: 1]) |
-| autoInstall   	| Automatic installation of modules  				| (v [default: true]) 	|
+| $ | Name          | Desc        | Args 		|
+|:-:|-------------|-------------|-------------|
+|   |               	| -           ||
+| + | createInstance    | Create new instance  								| (isGlobal) |
+| + | new      			| Set module(s) in `Qwerty` app  					| (name [string, hash], [data]) |
+| + | remove      		| Remove module(s) from `Qwerty` app  				| (name [string, array, hash]) |
+|   |               	| -           ||
+| - | $      			| Require  											| (module [string, array, hash], <args>) |
+|   |               	| -           ||
+| + | strict        	| Stop the work, if has errors in the modules  		| (v [default: true]) 	|
+| - | global        	| Set `$` as Global Var   							| (v [default: true]) 	|
+| + | dir        		| Project directory (where modules) 				| (v [default: ""]) |
+| + | log        		| Log level (0, 1, 2) 								| (v [default: 1]) |
+| + | autoInstall   	| Automatic installation of modules  				| (v [default: true]) 	|
 
 
 #### Examples
@@ -78,6 +79,32 @@ $({"fire-inject": "inject"}) //_ Alias
 $("inject").go(function() { console.log("inject"); });
 
 $("fire-inject@0.0.29").go(function() { console.log("inject"); });
+
+//-----]>
+
+{
+    $.new({
+        "test":     13,
+        "testV1":   "X",
+        "testV2":   "Y"
+    });
+
+    $.new("testClass", function() {
+        this.data = 666;  console.log("test/Class:", arguments);
+    });
+
+    $("testClass").prototype.func = function() { return 69; };
+}
+
+console.log(JSON.stringify({
+    "T0": $(),
+
+    "T1": $("test"),
+    "T2": $("testClass", true, 3, 2, 1).func(),
+
+    "T3": $(["test", "testV2"]),
+    "T4": $({"test": "Z-TEST"})
+}, null, "\t"));
 ```
 
 

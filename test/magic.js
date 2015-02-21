@@ -13,18 +13,18 @@
 //_ Dir [SET] -> Check Local [TREE] -> Check Global -> If [-] -> Install Local
 //_ Dir [NSET] -> Check Global -> If [-] -> Install Global
 
-var rQwerty             = require("../index").log(2).dir(__dirname);
+require("../index").log(2).dir(__dirname);
 
 //-----------------------------------------------------
 
 {
-    rQwerty.new({
+    $.new({
         "test":     13,
         "testV1":   "X",
         "testV2":   "Y"
     });
 
-    rQwerty.new("testClass", function() {
+    $.new("testClass", function() {
         this.data = 666;  console.log("test/Class:", arguments);
     });
 
@@ -44,16 +44,18 @@ console.log(JSON.stringify({
 }, null, "\t"));
 
 
-$("./data.json");
-$("./ops.js");
-$("./x/node_modules/ops.js");
-
 $({"fire-inject": "inject"});
 
 $("fire-inject").go(function() { console.log("inject"); });
 $("inject").go(function() { console.log("inject"); });
 
-$("fire-inject@0.0.29").go(function() { console.log("inject"); });
+$("fire-inject@0.0.30").go(function() { console.log("inject"); });
+
+//-------------------------]>
+
+$.dir(__dirname + "/x/node_modules").$("ops.js"); //_ Load : First call
+$.dir(__dirname).$("data.json");
+$("ops.js"); //_ Return
 
 
 //$("fire-inject.js");
