@@ -16,7 +16,7 @@ $("fire-inject@0.0.30").go(function() { console.log("Just Do It"); });
 
 ---------------------+
 Load: 2 module(s)
-Dir: [global]
+Dir: /web/project
 ---------------------+
 
 Not found module: steel-model !
@@ -45,12 +45,12 @@ Failed: 0
 
 #### Methods of Module
 
-| $ | Name          | Desc        | Args 		|
+| $ | Name        | Desc        | Args			|
 |:-:|-------------|-------------|-------------|
 |   |               	| -           ||
 | + | createInstance    | Create new instance  								| (isGlobal) |
 | + | new      			| Set module(s) in `Qwerty` app  					| (name [string, hash], [data]) |
-| + | remove      		| Remove module(s) from `Qwerty` app  				| (name [string, array, hash]) |
+| + | delete      		| Delete module(s) from `Qwerty` app  				| (name [string, array, hash]) |
 |   |               	| -           ||
 | - | $      			| Require  											| (module [string, array, hash], <args>) |
 |   |               	| -           ||
@@ -105,6 +105,20 @@ console.log(JSON.stringify({
     "T3": $(["test", "testV2"]),
     "T4": $({"test": "Z-TEST"})
 }, null, "\t"));
+
+
+$({"fire-inject": "inject"});
+
+$("fire-inject@0.0.36").go(function() { console.log("inject"); });
+$("inject").go(function() { console.log("inject"); });
+
+$("fire-inject@0.0.30").go(function() { console.log("inject"); });
+
+//-------------------------]>
+
+$.dir(__dirname + "/x/node_modules").$("ops.js"); //_ Load : First call
+$.dir(__dirname).$("data.json");
+$("ops.js"); //_ Return
 ```
 
 
