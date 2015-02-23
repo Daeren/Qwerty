@@ -13,7 +13,7 @@
 //_ Dir [SET] -> Check Local [TREE] -> Check Global -> If [-] -> Install Local
 //_ Dir [NSET] -> Check Global -> If [-] -> Install Global
 
-require("../index").log(2).dir(__dirname);
+require("../index").log(3).dir(__dirname);
 
 //-----------------------------------------------------
 

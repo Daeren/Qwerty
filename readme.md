@@ -59,7 +59,7 @@ Failed: 0
 | + | strict        	| Stop the work, if has errors in the modules  		| (v [default: true]) 	|
 | - | global        	| Set `$` as Global Var   							| (v [default: true]) 	|
 | + | dir        		| Project directory (where modules) 				| (v [default: ""]) |
-| + | log        		| Log level (0, 1, 2) 								| (v [default: 1]) |
+| + | log        		| Log level (0, 1, 2, 3) 							| (v [default: 1]) |
 | + | autoInstall   	| Automatic installation of modules  				| (v [default: true]) 	|
 
 

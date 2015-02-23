@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.006
+// Version: 0.00.007
 //
 //-----------------------------------------------------
 
@@ -265,10 +265,29 @@ function loadModules(modules) {
 
         //----------------)>
 
+        function throwModuleNotFound(text) {
+            error = new Error(text);
+            error.code = "MODULE_NOT_FOUND";
+
+            throw error;
+        }
+
+        function checkModuleVersion(p) {
+            var pcg;
+
+            try {
+                pcg = include(p + "/package.json");
+            } catch(e) { }
+
+            return pcg && pcg.hasOwnProperty("version") ? moduleVer == pcg.version : true;
+        }
+
+        //----------------)>
+
         try {
             //-----[Try find module]-------}>
 
-            {
+            if(!_.path) {
                 var modulePackage, pathGoodVer, error;
                 var ps = module.parent.paths;
 
@@ -279,12 +298,11 @@ function loadModules(modules) {
                         modulePackage = include(p + "/" + moduleName + "/package.json");
                         pathGoodVer = p;
 
-                        if(modulePackage.hasOwnProperty("version")) {
+                        if(moduleVer && modulePackage.hasOwnProperty("version")) {
                             var packageVer = modulePackage.version;
 
-                            if(moduleVer && moduleVer != packageVer) {
+                            if(moduleVer != packageVer) {
                                 pathGoodVer = undefined;
-
                             }
                         }
                     } catch(e) {
@@ -296,26 +314,30 @@ function loadModules(modules) {
                 if(pathGoodVer) {
                     objModule = include(pathGoodVer + "/" + moduleName);
                 } else if(modulePackage) {
-                    error = new Error("package.json: different versions");
-                    error.code = "MODULE_NOT_FOUND";
-
-                    throw error;
+                    throwModuleNotFound("package.json: different versions");
                 }
             }
 
             //-----[Try require]-------}>
 
-            try {
-                objModule = include(dirModules + "/node_modules/" + moduleName);
-            } catch(e) {
-                if(e.code != "MODULE_NOT_FOUND") throw e;
-
+            if(!objModule) {
                 try {
-                    objModule = include(dirModules + "/" + moduleName);
+                    var p = dirModules + "/node_modules/" + moduleName;
+
+                    objModule = include(p);
+
+                    if(moduleVer && !checkModuleVersion(p))
+                        throwModuleNotFound("package.json: different versions");
                 } catch(e) {
                     if(e.code != "MODULE_NOT_FOUND") throw e;
 
-                    objModule = include(moduleName);
+                    try {
+                        objModule = include(dirModules + "/" + moduleName);
+                    } catch(e) {
+                        if(e.code != "MODULE_NOT_FOUND") throw e;
+
+                        objModule = include(moduleName);
+                    }
                 }
             }
 
@@ -372,8 +394,9 @@ function loadModules(modules) {
                     try {
                         cmd = (dirModules ? ("cd " + dirModules + " && ") : "") + "npm install " + moduleName + (moduleVer ? ("@" + moduleVer) : "") + (dirModules ? "" : " -g");
 
+                        if(_.logLevel > 2)
+                            console.log(cmd);
 
-                        console.log(cmd);
                         cmd = rShelljs.exec(cmd,  {"silent": true});
 
                         if(cmd.code !== 0) {
@@ -386,6 +409,9 @@ function loadModules(modules) {
                         }
 
                         cmd = cmd.output;
+
+                        if(_.logLevel > 2)
+                            console.log(cmd);
                     } catch(e) {
                         cmd = null;
                     }
