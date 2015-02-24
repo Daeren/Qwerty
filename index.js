@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.007
+// Version: 0.00.008
 //
 //-----------------------------------------------------
 
@@ -189,7 +189,10 @@ var CApp = function(isGlobal) {
 
 CApp.prototype = {
     "global": function(v) {
-        if(v) global.$ = this.require;
+        if(typeof(v) == "undefined")
+            return this;
+
+        if(v) global.$ = this.$;
         else delete global.$;
 
         return this;

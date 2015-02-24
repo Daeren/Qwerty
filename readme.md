@@ -51,7 +51,7 @@ Failed: 0
 | $ | Name        | Desc        | Args			|
 |:-:|-------------|-------------|-------------|
 |   |               	| -           ||
-| + | createInstance    | Create new instance  								| (isGlobal) |
+| + | createInstance    | Create new instance  								| ([isGlobal]) |
 | + | new      			| Set module(s) in `Qwerty` app  					| (name [string, hash], [data]) |
 | + | delete      		| Delete module(s) from `Qwerty` app  				| (name [string, array, hash]) |
 |   |               	| -           ||

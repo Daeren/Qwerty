@@ -1,6 +1,6 @@
 {
     "name": "qwerty",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Lazy 'require'",
 
     "homepage": "http://666.io",
@@ -42,6 +42,6 @@
         "url": "https://github.com/Daeren/Qwerty/issues"
     },
 
-    "_id": "qwerty@0.0.7",
+    "_id": "qwerty@0.0.8",
     "_from": "qwerty@"
 }
