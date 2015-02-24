@@ -40,9 +40,10 @@ Failed: 0
 
 #### Desc
 
-* Ignored `require` cache
-* Automatic installation of modules
+* Auto-install modules
+* Auto-updating modules
 * Simple, global access
+* Ignored `require` cache
 
 
 #### Methods of Module
@@ -60,7 +61,9 @@ Failed: 0
 | - | global        	| Set `$` as Global Var   							| (v [default: true]) 	|
 | + | dir        		| Project directory (where modules) 				| (v [default: ""]) |
 | + | log        		| Log level (0, 1, 2, 3) 							| (v [default: 1]) |
-| + | autoInstall   	| Automatic installation of modules  				| (v [default: true]) 	|
+| + | use        		| Package manager 									| (v [default: "npm"]) |
+| + | autoInstall   	| Auto-install of modules  							| (v [default: true]) 	|
+| + | update   			| To update the module after every N days  			| (v [default: 7]) 	|
 
 
 #### Examples

@@ -11,7 +11,6 @@
 //-----------------------------------------------------
 
 //_ Dir [SET] -> Check Local [TREE] -> Check Global -> If [-] -> Install Local
-//_ Dir [NSET] -> Check Global -> If [-] -> Install Global
 
 require("../index").log(3).dir(__dirname);
 
@@ -46,10 +45,10 @@ console.log(JSON.stringify({
 
 $({"fire-inject": "inject"});
 
-$("fire-inject@0.0.36").go(function() { console.log("inject"); });
+$("fire-inject@0.0.36").go(function() { console.log("inject"); }); //_ Load : Project Dir
 $("inject").go(function() { console.log("inject"); });
 
-$("fire-inject@0.0.30").go(function() { console.log("inject"); });
+$("fire-inject@0.0.30").go(function() { console.log("inject"); }); //_ Load : Project Dir : replace `0.0.36`
 
 //-------------------------]>
 
