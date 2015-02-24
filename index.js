@@ -207,6 +207,8 @@ function include(path) {
     return require(path);
 }
 
+//----------------]>
+
 function getPathByFile(v) {
     if(!v || typeof(v) != "string")
         return "";
@@ -224,6 +226,22 @@ function getDaysBtwTwoDates(t2, t1) {
     var timeDiff = Math.abs(dtPkg.getTime() - dtNow.getTime());
 
     return Math.floor(timeDiff / (1000 * 3600 * 24));
+}
+
+//----------------]>
+
+function throwModuleNotFound(text) {
+    var error = new Error(text || "");
+    error.code = "MODULE_NOT_FOUND";
+
+    throw error;
+}
+
+function throwModuleNeedUpdate(text) {
+    var error = new Error(text || "");
+    error.code = "MODULE_NEED_UPDATE";
+
+    throw error;
 }
 
 //----------------------------------]>
@@ -271,6 +289,19 @@ function loadModules(modules) {
         console.log("---------------------+\n");
     }
 
+    //------------------]>
+
+    function checkModuleTime(p) {
+        var stPkg;
+
+        try {
+            stPkg = rFs.statSync(p + "/package.json");
+        } catch(e) {
+            return null;
+        }
+
+        return stPkg && getDaysBtwTwoDates(stPkg.mtime) < _.numDaysToUpdate;
+    }
 
     function loadModule(moduleName, moduleAlias, iTry) {
         var name = moduleAlias || moduleName;
@@ -290,20 +321,6 @@ function loadModules(modules) {
 
         //----------------)>
 
-        function throwModuleNotFound(text) {
-            var error = new Error(text || "");
-            error.code = "MODULE_NOT_FOUND";
-
-            throw error;
-        }
-
-        function throwModuleNeedUpdate(text) {
-            var error = new Error(text || "");
-            error.code = "MODULE_NEED_UPDATE";
-
-            throw error;
-        }
-
         function checkModuleVersion(p) {
             var pkg;
 
@@ -314,18 +331,6 @@ function loadModules(modules) {
             }
 
             return pkg && pkg.hasOwnProperty("version") && moduleVer == pkg.version;
-        }
-
-        function checkModuleTime(p) {
-            var stPkg;
-
-            try {
-                stPkg = rFs.statSync(p + "/package.json");
-            } catch(e) {
-                return null;
-            }
-
-            return stPkg && getDaysBtwTwoDates(stPkg.mtime) < _.numDaysToUpdate;
         }
 
         function installModule() {

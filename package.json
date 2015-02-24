@@ -9,9 +9,11 @@
         "require",
         "modules",
 		"npm",
+		"dependencies",
+		"management",
         "justdoit"
     ],
-
+	
     "author": {
         "name": "Daeren Torn",
         "email": "x@db.gg"
