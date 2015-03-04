@@ -7,7 +7,7 @@
 
 require("qwerty").log(2);
 
-$(["fire-inject", "steel-model"]); //_ Yep, that's all 
+$(["fire-inject", "aigis"]); //_ Yep, that's all 
 $("fire-inject@0.0.30").go(function() { console.log("Just Do It"); });
 
 
@@ -19,7 +19,7 @@ Load: 2 module(s)
 Dir: /web/project
 ---------------------+
 
-Not found module: steel-model !
+Not found module: aigis !
 
 Here We Go...
 [+] steel-model@0.0.33 |>
