@@ -2,7 +2,7 @@
 //
 // Author: Daeren Torn
 // Site: 666.io
-// Version: 0.00.008
+// Version: 0.00.009
 //
 //-----------------------------------------------------
 
@@ -27,9 +27,8 @@ var CApp = function(isGlobal) {
     this.strict             = true;
     this.auto               = true;
     this.logLevel           = 1;
-    this.path               = "";
     this.usePkgManager      = "npm";
-    this.numDaysToUpdate    = 7;
+    this.numDaysToUpdate    = 0; /*| + | update   			| To update the module after every N days  			| (v [default: 7]) 	|*/
 
     this.modules            = {};
 
@@ -110,11 +109,6 @@ var CApp = function(isGlobal) {
             return _;
         },
 
-        "dir": function(v) {
-            _.path = rPath.normalize(v || "");
-            return _;
-        },
-
         "log": function(v) {
             _.logLevel = v;
             return _;
@@ -182,18 +176,24 @@ var CApp = function(isGlobal) {
         this[i] = shareMethods[i];
     }
 
-    if(isGlobal) {
-        global.$ =  this.$;
-    }
+    if(isGlobal)
+        this.global(true);
 };
 
 CApp.prototype = {
     "global": function(v) {
-        if(typeof(v) == "undefined")
+        if(global && typeof(global) !== "object" || typeof(v) === "undefined")
             return this;
 
-        if(v) global.$ = this.$;
-        else delete global.$;
+        if(v) {
+            var gObj = this.$;
+
+            if(typeof(global.$) === "undefined")
+                global.$ = gObj;
+        } else {
+            if(global.$ === this.$)
+                delete global.$;
+        }
 
         return this;
     }
@@ -263,7 +263,7 @@ function loadModules(modules) {
         globalInstall,      //_ 0 - N, 1 - Y, 2 - C, 3 - Q
         exceptions,
 
-        dirModules          = _.path || getPathByFile(module.parent.filename);
+        dirModules          = getPathByFile(module.parent.filename);
 
     //------------------]>
 

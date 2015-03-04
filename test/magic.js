@@ -9,9 +9,9 @@
 
 //-----------------------------------------------------
 
-//_ Dir [SET] -> Check Local [TREE] -> Check Global -> If [-] -> Install Local
+//_ Check Local [TREE] -> Check Global -> If [-] -> Install Local
 
-require("../index").log(3).dir(__dirname);
+require("../index").log(3);
 
 //-----------------------------------------------------
 
@@ -23,7 +23,7 @@ require("../index").log(3).dir(__dirname);
     });
 
     $.new("testClass", function() {
-        this.data = 666;  console.log("test/Class:", arguments);
+        this.data = 69;  console.log("testClass:", arguments);
     });
 
     $("testClass").prototype.func = function() { return 69; };
@@ -51,8 +51,8 @@ $("fire-inject@0.0.30").go(function() { console.log("inject"); }); //_ Load : Pr
 
 //-------------------------]>
 
-$.dir(__dirname + "/x/node_modules").$("ops.js"); //_ Load : First call
-$.dir(__dirname).$("data.json");
+$.$(__dirname + "/x/node_modules/ops.js"); //_ Load : First call
+$(__dirname + "/data.json");
 $("ops.js"); //_ Return
 
 

@@ -41,7 +41,6 @@ Failed: 0
 #### Desc
 
 * Auto-install modules
-* Auto-updating modules
 * Simple, global access
 * Ignored `require` cache
 
@@ -63,7 +62,6 @@ Failed: 0
 | + | log        		| Log level (0, 1, 2, 3) 							| (v [default: 1]) |
 | + | use        		| Package manager 									| (v [default: "npm"]) |
 | + | autoInstall   	| Auto-install of modules  							| (v [default: true]) 	|
-| + | update   			| To update the module after every N days  			| (v [default: 7]) 	|
 
 
 #### Examples
